@@ -221,6 +221,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="AlgoTradeDB_Script.sql" />
     <Content Include="DAL\AlgoTradeOttEf.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>AlgoTradeOttEf.edmx</DependentUpon>
