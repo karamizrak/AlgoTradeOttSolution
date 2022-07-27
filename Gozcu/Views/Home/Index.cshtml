@@ -1,0 +1,188 @@
+﻿@using Gozcu.Models
+@model Gozcu.Models.AnaSayfaModel
+
+<style>
+    section.dashboard-counts .title { width: 60%; }
+
+    .kutuTepeRakam {
+        float: right;
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: -7px;
+    }
+
+    .dashinfo table td.text-left { width: 75%; }
+
+    .dashinfo-kutu-bilgi {
+        color: #666;
+        font-size: 0.9em;
+    }
+</style>
+
+<meta http-equiv="refresh" content="10">
+
+<div class="col-lg-12">
+    <div class="row">
+        <div class="chart col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="h4">Açık Pozisyonlar</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.AcikIslemler.Islemler != null && Model.AcikIslemler.Islemler.Count > 0)
+                    {
+                        decimal topKarUsdt = 0;
+                        <table class='datatable table table-striped table-bordered' style="font-size: 14px;">
+                            <thead>
+                            <tr>
+                                <th class="text-left">Sembol</th>
+                                <th class="text-left">Açılış</th>
+                                <th class="text-right">Alış Fiyatı</th>
+                                <th class="text-right">Mevcut Fiyat</th>
+                                <th class="text-left">Kontrol</th>
+                                <th class="text-right">Pozisyon Süresi</th>
+                                <th class="text-right">Kar Oranı</th>
+                                <th class="text-right">Kar USDT</th>
+                                <th class="text-left">Pik Tarihi</th>
+                                <th class="text-right">Pik Fiyatı</th>
+                                <th class="text-right">Pik Oranı</th>
+                                <th class="text-left">Pik Süresi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.AcikIslemler.Islemler)
+                            {
+                                var karoran = 100 * Convert.ToDecimal((Convert.ToDecimal(row.KontrolFiyat) - Convert.ToDecimal(row.GirisFiyat)) / Convert.ToDecimal(row.GirisFiyat));
+                                var artiClass = karoran > 0 ? "" : "color: red;";
+                                var topKomisyon = Convert.ToDecimal(row.GirisPariteKarsiligi * 75 / 100000) + Convert.ToDecimal(row.KontrolPariteKarsiligi * 75 / 100000);
+                                var karUsdt = row.KontrolPariteKarsiligi - row.GirisPariteKarsiligi - topKomisyon;
+                                topKarUsdt += Convert.ToDecimal(karUsdt);
+
+                                <tr style="@artiClass">
+                                    <td class="text-left">@(row.Sembol.Replace("USDT", "/USDT") + " - " + row.Parametreler + " - " + row.Periyot)</td>
+                                    <td class="text-left">@Convert.ToDateTime(row.GirisTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@($"{row.GirisFiyat:N8}") </td>
+                                    <td class="text-right">@($"{row.KontrolFiyat:N8}") </td>
+                                    <td class="text-left">@Convert.ToDateTime(row.KontrolTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@(Genel.PozisyonSuresiVer(Convert.ToDateTime(row.GirisTarihi), Convert.ToDateTime(row.KontrolTarihi)))</td>
+                                    <td class="text-right">
+                                        <b>%@($"{karoran:N2}") </b>
+                                    </td>
+                                    <td class="text-right">@($"{karUsdt:N2}") </td>
+                                    <td class="text-left">@Convert.ToDateTime(row.PikTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@($"{row.PikFiyat:N8}") </td>
+                                    <td class="text-right">
+                                        <b>%@($"{100 * Convert.ToDecimal((Convert.ToDecimal(row.PikFiyat) - Convert.ToDecimal(row.GirisFiyat)) / Convert.ToDecimal(row.GirisFiyat)):N2}") </b>
+                                    </td>
+                                    <td class="text-left">@(Genel.PozisyonSuresiVer(Convert.ToDateTime(row.GirisTarihi), Convert.ToDateTime(row.PikTarihi)))</td>
+                                </tr>
+                            }
+
+                            <tr>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-right">Top Kar:</td>
+                                <td class="text-right">@($"{topKarUsdt:N2}") </td>
+                                <td class="text-left">USDT</td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <span>Açık Pozisyon Bulunmuyor</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="chart col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="h4">Bugün Kapanan Pozisyonlar</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.BugunKapananIslemler.Islemler != null && Model.BugunKapananIslemler.Islemler.Count > 0)
+                    {
+                        decimal topKarUSDT = 0;
+                        <table class='datatable table table-striped table-bordered'>
+                            <thead>
+                            <tr>
+                                <th class="text-left">Sembol</th>
+                                <th class="text-left">Açılış</th>
+                                <th class="text-right">Alış Fiyatı</th>
+                                <th class="text-left">Kapanış</th>
+                                <th class="text-right">Kapanış Fiyat</th>
+                                <th class="text-right">Kar Oranı</th>
+                                <th class="text-right">Kar USDT</th>
+                                <th class="text-right">Pozisyon Süresi</th>
+                                <th class="text-left">Pik Tarihi</th>
+                                <th class="text-right">Pik Fiyatı</th>
+                                <th class="text-right">Pik Oranı</th>
+                                <th class="text-right">Pik Süresi</th>
+                                <th class="text-right">Kapanma Sebebi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.BugunKapananIslemler.Islemler)
+                            {
+                                var karoran = 100 * Convert.ToDecimal((Convert.ToDecimal(row.KontrolFiyat) - Convert.ToDecimal(row.GirisFiyat)) / Convert.ToDecimal(row.GirisFiyat));
+                                var artiClass = karoran > 0 ? "" : "color: red;";
+                                var topKomisyon = Convert.ToDecimal(row.GirisPariteKarsiligi * 75 / 100000) + Convert.ToDecimal(row.KontrolPariteKarsiligi * 75 / 100000);
+                                var karUsdt = row.KontrolPariteKarsiligi - row.GirisPariteKarsiligi - topKomisyon;
+                                topKarUSDT += Convert.ToDecimal(karUsdt);
+
+                                <tr style="@artiClass">
+                                    <td class="text-left">@(row.Sembol.Replace("USDT", "/USDT") + " - " + row.Parametreler + " - " + row.Periyot)</td>
+                                    <td class="text-left">@Convert.ToDateTime(row.GirisTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@($"{row.GirisFiyat:N8}") </td>
+                                    <td class="text-left">@Convert.ToDateTime(row.KontrolTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@($"{row.KontrolFiyat:N8}") </td>
+                                    <td class="text-right">
+                                        <b>%@($"{karoran:N2}") </b>
+                                    </td>
+                                    <td class="text-right">@($"{karUsdt:N2}") </td>
+                                    <td class="text-right">@(Genel.PozisyonSuresiVer(Convert.ToDateTime(row.GirisTarihi), Convert.ToDateTime(row.KontrolTarihi)))</td>
+                                    <td class="text-left">@Convert.ToDateTime(row.PikTarihi).ToString("dd MMMM HH:mm:ss")</td>
+                                    <td class="text-right">@($"{row.PikFiyat:N8}") </td>
+                                    <td class="text-right">
+                                        <b>%@($"{100 * Convert.ToDecimal((Convert.ToDecimal(row.PikFiyat) - Convert.ToDecimal(row.GirisFiyat)) / Convert.ToDecimal(row.GirisFiyat)):N2}") </b>
+                                    </td>
+                                    <td class="text-right">@(Genel.PozisyonSuresiVer(Convert.ToDateTime(row.GirisTarihi), Convert.ToDateTime(row.PikTarihi)))</td>
+                                    <td class="text-right">@(row.KapanmaSebebi)</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-right">Top Kar:</td>
+                                <td class="text-right">@($"{topKarUSDT:N2}") </td>
+                                <td class="text-left">USDT</td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                                <td class="text-left"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <span>Bugün Kapanan Pozisyon Bulunmuyor</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

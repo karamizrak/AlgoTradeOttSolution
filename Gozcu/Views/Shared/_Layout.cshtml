@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="nofollow,noindex">
+    @*<link rel="icon" type="image/x-icon" href="https://bla2018.biletall.com/img-v7/ortak/favicon.ico" />*@
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    @if (ViewBag.Title != null)
+    {
+        <title>@ViewBag.Title</title>
+    }
+    else
+    {
+        <title>Gözcü Paneli</title>
+    }
+    @Styles.Render("~/bundles/admincss")
+    @Styles.Render("~/bundles/genelcss")
+    @RenderSection("styles", false)
+
+    @Scripts.Render("~/bundles/adminjs")
+
+    @{
+        string actionName = this.ViewContext.RouteData.Values["action"].ToString();
+
+        //https://fontawesome.com/v4.7.0/icons/
+    }
+</head>
+<body>
+    <div class="page">
+        <!-- Main Navbar-->
+        <header class="header">
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <div class="navbar-holder d-flex align-items-center justify-content-between">
+                        <!-- Navbar Header-->
+                        <div class="navbar-header">
+                            <!-- Navbar Brand --><a href="/" class="navbar-brand d-none d-sm-inline-block">
+                                <div class="brand-text d-none d-lg-inline-block"><span>Bot </span><strong>Dashboard</strong></div>
+                                <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>BD</strong></div>
+                            </a>
+                            <!-- Toggle Button--><a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+                        </div>
+                        <!-- Navbar Menu -->
+                        <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                            @*<li class="nav-item"> <a class="anasayfaLink nav-link logout" target="_blank" href="@anaSayfaURL"> <span class="d-none d-sm-inline">Sayfada Gör</span><i class="icon-home"></i></a></li>*@
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="page-content d-flex align-items-stretch">
+            <!-- Side Navbar -->
+            <nav class="side-navbar">
+                <!-- Sidebar Header-->
+                <div class="sidebar-header d-flex align-items-center">
+                    <div class="title">
+                        <h1 class="h4">AlgoTrade OTT</h1>
+                        <p>Admin</p>
+                    </div>
+                </div>
+                @*<span class="heading">Menü</span>*@
+            <ul class="list-unstyled">
+                <li class="@(actionName == "Index" ? "active":"")"><a href="/"><i class="icon-presentation"></i>Dashboard</a></li>
+                <li class="@(actionName == "AcikPozisyonlar" ? "active":"")"><a href="/acik-pozisyonlar"><i class="fa fa-bar-chart"></i>Açık Pozisyonlar</a></li>
+                <li class="@(actionName == "AlinmamisPozisyonlar" ? "active":"")"><a href="/alinmamis-pozisyonlar"><i class="fa fa-binoculars"></i>Girilmemiş Pozisyonlar</a></li>
+                <li class="@(actionName == "BugunKapananlar" ? "active":"")"><a href="/bugun-kapananlar"><i class="fa fa-history"></i>Bugün Kapananlar</a></li>
+                <li class="@(actionName == "TumKapananlar" ? "active":"")"><a href="/tum-kapananlar"><i class="fa fa-list-ul"></i>Tüm Kapananlar</a></li>
+                <li class="@(actionName == "StratejiPuanlari" ? "active":"")"><a href="/strateji-puanlari"><i class="fa fa-trophy"></i>Strateji Puanları</a></li>
+                <li class="@(actionName == "StratejiParametreleri" ? "active":"")"><a href="/strateji-parametreleri"><i class="fa fa-paragraph"></i>Tarayıcı Parametreleri</a></li>
+                <li class="@(actionName == "Ayarlar" ? "active":"")"><a href="/ayarlar"><i class="fa fa-cogs"></i>Ayarlar</a></li>
+                @*@Html.Partial("_LoginPartial")*@
+
+            </ul>
+            </nav>
+            <div class="content-inner">
+                @{
+                    if (ViewBag.Title != null)
+                    {
+                        <header class="page-header">
+                            <div class="container-fluid">
+                                <h2 class="no-margin-bottom">@ViewBag.Title</h2>
+                            </div>
+                        </header>
+                    }
+                }
+
+                <section class="forms">
+                    <div class="container-fluid">
+                        @RenderBody()
+                    </div>
+                </section>
+                <footer class="main-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>Bot Dashboard &copy; @DateTime.Now.Year</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOrnek" tabindex="-1" role="dialog" aria-labelledby="modalOrnekLabel" aria-hidden="true" class="modal fade text-left">
+        <div role="document" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalBaslik" class="modal-title">Hata</h4>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body" id="modalIcerik">
+                    <p>Hata</p>
+                </div>
+                <div class="modal-footer" id="modalFooter">
+                    <button type="button" data-dismiss="modal" class="btn btn-secondary" id="modalButonKapat">Kapat</button>
+                    <button type="button" class="btn btn-primary" id="modalButonKaydet">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @Scripts.Render("~/bundles/geneljs")
+    @Scripts.Render("~/bundles/validatejs")
+    @RenderSection("scripts", false)
+</body>
+</html>

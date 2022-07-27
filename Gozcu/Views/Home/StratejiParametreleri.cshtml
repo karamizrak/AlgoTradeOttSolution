@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Tarayıcı Parametreleri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/bundles/datatablescss")
+    @Styles.Render("~/bundles/daterangepickercss")
+}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="h4">Tarayıcı Parametreleri</h3>
+        </div>
+        <div class="card-body tablom-container">
+        </div>
+    </div>
+</div>
+
+<div id="modalDetay" tabindex="-1" role="dialog" aria-labelledby="modalDetayLabel" aria-hidden="true" class="modal fade">
+    <div role="document" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalBaslik" class="modal-title">Parametre Düzenle</h4>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body" id="modalIcerik">
+                <form class="form-horizontal">
+                    <input id="inputModalId" type="hidden">
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label p-t-10">Alt Değer</label>
+                        <div class="col-sm-9">
+                            <input id="inputOpt1" type="text" class="form-control form-control-success">
+                            <small class="form-text">Kesir Sayı Girecekseniz (,) kullanın. Örn: 0,50</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label p-t-10">Üst Değer</label>
+                        <div class="col-sm-9">
+                            <input id="inputOpt2" type="text" class="form-control form-control-success">
+                            <small class="form-text">Kesir Sayı Girecekseniz (,) kullanın. Örn: 0,50</small>
+                            <small class="form-text">Eşik değer parametresi için bu alanı 0 bırakınız</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label p-t-10">Adım</label>
+                        <div class="col-sm-9">
+                            <input id="inputOpt3" type="text" class="form-control form-control-success">
+                            <small class="form-text">Kesir Sayı Girecekseniz (,) kullanın. Örn: 0,50</small>
+                            <small class="form-text">Eşik değer parametresi için bu alanı 0 bırakınız</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary">İptal</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="Ekle();">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatablesjs")
+    @Scripts.Render("~/bundles/daterangepickerjs")
+    @*<script src="~/Content/vendor/datepicker/bootstrap-datepicker.tr.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Getir();
+        });
+
+        function Getir() {
+            $(".tablom-container").html("<p class='text-center'>Yükleniyor...</p>");
+            PageMethodCagir("/json/Home/StratejiParametreleriGetir",
+                {
+                    basariliOlunca: function (response) {
+                        //console.table(response);
+                        var tbody = "";
+
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                tbody += "<tr>" +
+                                    "<td class='text-left'>" + response[i].ParametreAdi + "</td>" +
+                                    "<td class='text-right'>" + response[i].AltDeger.toString().replace(".", ",") + "</td>" +
+                                    "<td class='text-right'>" + response[i].UstDeger.toString().replace(".", ",") + "</td>" +
+                                    "<td class='text-right'>" + response[i].Adim.toString().replace(".", ",") + "</td>" +
+                                    "<td class='text-right'><a class='btn btn-link tablo-detay-btn' onclick='KayitGetir(\"" + response[i].Id + "\")'>Düzenle</a></td>" +
+                                    "</tr>";
+                            }
+                        }
+
+                        var tbl = "<table class='datatable table table-striped table-bordered' id='tablom'>" +
+                            "<thead><tr>" +
+                            "<th class='text-left'>Parametre Adı</th>" +
+                            "<th class='text-right'>Alt Değer</th>" +
+                            "<th class='text-right'>Üst Değer</th>" +
+                            "<th class='text-right'>Adım</th>" +
+                            "<th class='text-right'></th>" +
+                            "</tr></thead>" +
+                            "<tbody>" + tbody + "</tbody>" +
+                            "</table>";
+
+                        $(".tablom-container").html(tbl);
+                    },
+                    hataVerince: function (e) {
+                        JsonErrorHandler(e);
+                    },
+                    baglantiOncesinde: function () { },
+                    tamamlaninca: function () {
+                        $('#tablom').dataTable({
+                            retrieve: true,
+                            responsive: true,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'csv', 'excel', 'pdf'
+                            ],
+                            "autoWidth": false,
+                            "order": [[0, "asc"]],
+                            "language": { "url": "/Content/vendor/datatables/Turkish.json" }
+                        });
+                    }
+                });
+        }
+
+        function KayitGetir(id) {
+            $.ajax({
+                type: "POST",
+                url: "/json/Home/StratejiParametreleriKayitGetir",
+                data: {
+                    islemID: parseInt(id)
+                },
+                success: function (response) {
+                    var reslt = JSON.parse(response);
+                    $("#inputModalId").val(reslt.Id);
+                    $("#inputOpt1").val(reslt.AltDeger.toString().replace(".", ","));
+                    $("#inputOpt2").val(reslt.UstDeger.toString().replace(".", ","));
+                    $("#inputOpt3").val(reslt.Adim.toString().replace(".", ","));
+                    var _modal = $('#modalDetay');
+                    _modal.modal('show');
+                },
+                error: function (e) {
+                    JsonErrorHandler(e);
+                }
+            });
+        }
+
+        function Ekle() {
+            $.ajax({
+                type: "POST",
+                url: "/json/Home/StratejiParametreleriKaydet",
+                data: {
+                    id: parseInt($("#inputModalId").val()),
+                    opt1: $("#inputOpt1").val(),
+                    opt2: $("#inputOpt2").val(),
+                    opt3: $("#inputOpt3").val()
+                },
+                success: function () {
+                    var _modal = $('#modalDetay');
+                    _modal.modal('hide');
+                    Getir();
+                },
+                error: function (e) {
+                    JsonErrorHandler(e);
+                }
+            });
+        }
+    </script>
+}

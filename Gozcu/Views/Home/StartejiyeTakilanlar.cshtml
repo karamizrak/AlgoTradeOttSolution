@@ -1,0 +1,68 @@
+﻿@using System.Data
+@using System.Globalization
+@model List<Gozcu.DAL.StratejiyeTakilanlar>
+
+@{
+    ViewBag.Title = "Stratejiye Takılanlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/bundles/datatablescss")
+    @Styles.Render("~/bundles/daterangepickercss")
+}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="h4">BB "AL" dediği halde stratejiye takıldığı için pas geçilen işlemler listesi</h3>
+        </div>
+        <div class="card-body">
+            <table id="tablom" class='datatable table table-striped table-bordered'>
+                <thead>
+                    <tr>
+                        <th class="text-left">Sembol</th>
+                        <th class="text-right">Geçen Bar Sayısı</th>
+                        <th class="text-right">Al Sinyali Fiyatı</th>
+                        <th class="text-right">Mevcut Fiyat</th>
+                        <th class="text-right">Al-Mevcut Oranı %</th>
+                        <th class="text-right">Sebep</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model)
+                    {
+                        <tr>
+                            <td class="text-left">@(row.Sembol.Replace("USDT", "/USDT") + " - " + row.Parametreler + " - " + row.Periyot)</td>
+                            <td class="text-right">@row.GecenBarSayisi</td>
+                            <td class="text-right">@row.AlSinyalFiyat</td>
+                            <td class="text-right">@row.MevcutFiyat</td>
+                            <td class="text-right">@($"{100 * Convert.ToDecimal((Convert.ToDecimal(row.MevcutFiyat) - Convert.ToDecimal(row.AlSinyalFiyat)) / Convert.ToDecimal(row.AlSinyalFiyat)):N2}")</td>
+                            <td class="text-right">@row.Sebep</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatablesjs")
+    @Scripts.Render("~/bundles/daterangepickerjs")
+    <script>
+        $(document).ready(function () {
+            $('#tablom').dataTable({
+                retrieve: true,
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel', 'pdf'
+                ],
+                "autoWidth": false,
+                "language": { "url": "/Content/vendor/datatables/Turkish.json" }
+            });
+        });
+    </script>
+}

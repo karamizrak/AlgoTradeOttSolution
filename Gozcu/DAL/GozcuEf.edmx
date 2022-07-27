@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="AlgoTradeOttDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AvciSonuclari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sermaye" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="Kar" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="KarOran" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="int" />
+          <Property Name="IslemSayisi" Type="int" />
+          <Property Name="SonDurum" Type="nvarchar" MaxLength="50" />
+          <Property Name="AlBarAcilisTarihi" Type="datetime" />
+          <Property Name="GecenBarSayisi" Type="int" />
+          <Property Name="AlSinyalFiyat" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="MevcutFiyat" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="AlVeMevcutFarkOran" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="IslemTipi" Type="int" Nullable="false" />
+          <Property Name="Parametreler" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AyarlarTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BinanceApiKey" Type="nvarchar" MaxLength="500" />
+          <Property Name="BinanceApiSecret" Type="nvarchar" MaxLength="500" />
+          <Property Name="EmirBoyutuUSDT" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="HaricSemboller" Type="nvarchar(max)" />
+          <Property Name="IslemPeriyot" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BacktestBarSayisi" Type="int" Nullable="false" />
+          <Property Name="BacktestEsikKarOrani" Type="int" Nullable="false" />
+          <Property Name="KarAlOran" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TakipEdenDurdurOran" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TelegramApiToken" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="TelegramLogChannel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TelegramIslemChannel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IslemTipi" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FiyatKontrolTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IslemID" Type="int" />
+          <Property Name="KontrolTarihi" Type="datetime" />
+          <Property Name="KontrolFiyat" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="KarOrani" Type="decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="IslemTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GirisTarihi" Type="datetime" Nullable="false" />
+          <Property Name="GirisBarAcilisTarihi" Type="datetime" Nullable="false" />
+          <Property Name="EmirBoyutu" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="CoinAdeti" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="GirisFiyat" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="GirisPariteKarsiligi" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KontrolTarihi" Type="datetime" Nullable="false" />
+          <Property Name="KontrolFiyat" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KontrolPariteKarsiligi" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KarPariteKarsiligi" Type="decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KarOrani" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="IslemKapandiMi" Type="bit" Nullable="false" />
+          <Property Name="PikFiyat" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="PikOrani" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="PikTarihi" Type="datetime" />
+          <Property Name="KapanmaSebebi" Type="nvarchar" MaxLength="50" />
+          <Property Name="IslemTipi" Type="int" Nullable="false" />
+          <Property Name="Parametreler" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RehberTablo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" />
+          <Property Name="Parametreler" Type="nvarchar(max)" />
+          <Property Name="NetKar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BurutKar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BurutZarar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="ProfitFactor" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="int" />
+          <Property Name="IslemSayisi" Type="int" />
+          <Property Name="BasariliIslemSayisi" Type="int" />
+          <Property Name="KarAlSayisi" Type="int" />
+          <Property Name="TakipEdenDurdurSayisi" Type="int" />
+          <Property Name="ZararDurdurSayisi" Type="int" />
+          <Property Name="StratejiSatSayisi" Type="int" />
+        </EntityType>
+        <EntityType Name="StratejiParametreleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParametreAdi" Type="nvarchar" MaxLength="50" />
+          <Property Name="AltDeger" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="UstDeger" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="Adim" Type="decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="StratejiyeTakilanlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" />
+          <Property Name="Parametreler" Type="nvarchar" MaxLength="50" />
+          <Property Name="GecenBarSayisi" Type="int" />
+          <Property Name="AlSinyalFiyat" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="MevcutFiyat" Type="decimal" Precision="20" Scale="8" />
+          <Property Name="Sebep" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="temp_AvciSonuclari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sermaye" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="Kar" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="KarOran" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="int" />
+          <Property Name="IslemSayisi" Type="int" />
+          <Property Name="SonDurum" Type="nvarchar" MaxLength="50" />
+          <Property Name="AlBarAcilisTarihi" Type="datetime" />
+          <Property Name="GecenBarSayisi" Type="int" />
+          <Property Name="AlSinyalFiyat" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="MevcutFiyat" Type="decimal" Precision="12" Scale="8" />
+          <Property Name="AlVeMevcutFarkOran" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="IslemTipi" Type="int" Nullable="false" />
+          <Property Name="Parametreler" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="temp_RehberTablo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sembol" Type="nvarchar" MaxLength="50" />
+          <Property Name="Periyot" Type="nvarchar" MaxLength="50" />
+          <Property Name="Parametreler" Type="nvarchar(max)" />
+          <Property Name="NetKar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BurutKar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BurutZarar" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="ProfitFactor" Type="decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="int" />
+          <Property Name="IslemSayisi" Type="int" />
+          <Property Name="BasariliIslemSayisi" Type="int" />
+          <Property Name="KarAlSayisi" Type="int" />
+          <Property Name="TakipEdenDurdurSayisi" Type="int" />
+          <Property Name="ZararDurdurSayisi" Type="int" />
+          <Property Name="StratejiSatSayisi" Type="int" />
+        </EntityType>
+        <EntityContainer Name="AlgoTradeOttDbModelStoreContainer">
+          <EntitySet Name="AvciSonuclari" EntityType="Self.AvciSonuclari" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AyarlarTablosu" EntityType="Self.AyarlarTablosu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FiyatKontrolTablosu" EntityType="Self.FiyatKontrolTablosu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IslemTablosu" EntityType="Self.IslemTablosu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RehberTablo" EntityType="Self.RehberTablo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StratejiParametreleri" EntityType="Self.StratejiParametreleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StratejiyeTakilanlar" EntityType="Self.StratejiyeTakilanlar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="temp_AvciSonuclari" EntityType="Self.temp_AvciSonuclari" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="temp_RehberTablo" EntityType="Self.temp_RehberTablo" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AlgoTradeOttDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AvciSonuclari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sermaye" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="Kar" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="KarOran" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="Int32" />
+          <Property Name="IslemSayisi" Type="Int32" />
+          <Property Name="SonDurum" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AlBarAcilisTarihi" Type="DateTime" Precision="3" />
+          <Property Name="GecenBarSayisi" Type="Int32" />
+          <Property Name="AlSinyalFiyat" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="MevcutFiyat" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="AlVeMevcutFarkOran" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="IslemTipi" Type="Int32" Nullable="false" />
+          <Property Name="Parametreler" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AyarlarTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BinanceApiKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BinanceApiSecret" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EmirBoyutuUSDT" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="HaricSemboller" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IslemPeriyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BacktestBarSayisi" Type="Int32" Nullable="false" />
+          <Property Name="BacktestEsikKarOrani" Type="Int32" Nullable="false" />
+          <Property Name="KarAlOran" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TakipEdenDurdurOran" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="TelegramApiToken" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TelegramLogChannel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TelegramIslemChannel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IslemTipi" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FiyatKontrolTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IslemID" Type="Int32" />
+          <Property Name="KontrolTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KontrolFiyat" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="KarOrani" Type="Decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="IslemTablosu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GirisTarihi" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="GirisBarAcilisTarihi" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EmirBoyutu" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="CoinAdeti" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="GirisFiyat" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="GirisPariteKarsiligi" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KontrolTarihi" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="KontrolFiyat" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KontrolPariteKarsiligi" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KarPariteKarsiligi" Type="Decimal" Precision="20" Scale="8" Nullable="false" />
+          <Property Name="KarOrani" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="IslemKapandiMi" Type="Boolean" Nullable="false" />
+          <Property Name="PikFiyat" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="PikOrani" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="PikTarihi" Type="DateTime" Precision="3" />
+          <Property Name="KapanmaSebebi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IslemTipi" Type="Int32" Nullable="false" />
+          <Property Name="Parametreler" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RehberTablo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Parametreler" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NetKar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BurutKar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BurutZarar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="ProfitFactor" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="Int32" />
+          <Property Name="IslemSayisi" Type="Int32" />
+          <Property Name="BasariliIslemSayisi" Type="Int32" />
+          <Property Name="KarAlSayisi" Type="Int32" />
+          <Property Name="TakipEdenDurdurSayisi" Type="Int32" />
+          <Property Name="ZararDurdurSayisi" Type="Int32" />
+          <Property Name="StratejiSatSayisi" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StratejiParametreleri">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParametreAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AltDeger" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="UstDeger" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="Adim" Type="Decimal" Precision="12" Scale="2" />
+        </EntityType>
+        <EntityType Name="StratejiyeTakilanlar">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Parametreler" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GecenBarSayisi" Type="Int32" />
+          <Property Name="AlSinyalFiyat" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="MevcutFiyat" Type="Decimal" Precision="20" Scale="8" />
+          <Property Name="Sebep" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="temp_AvciSonuclari">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sermaye" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="Kar" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="KarOran" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="Int32" />
+          <Property Name="IslemSayisi" Type="Int32" />
+          <Property Name="SonDurum" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AlBarAcilisTarihi" Type="DateTime" Precision="3" />
+          <Property Name="GecenBarSayisi" Type="Int32" />
+          <Property Name="AlSinyalFiyat" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="MevcutFiyat" Type="Decimal" Precision="12" Scale="8" />
+          <Property Name="AlVeMevcutFarkOran" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="IslemTipi" Type="Int32" Nullable="false" />
+          <Property Name="Parametreler" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="temp_RehberTablo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sembol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Periyot" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Parametreler" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NetKar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BurutKar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BurutZarar" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="ProfitFactor" Type="Decimal" Precision="12" Scale="2" />
+          <Property Name="BarSayisi" Type="Int32" />
+          <Property Name="IslemSayisi" Type="Int32" />
+          <Property Name="BasariliIslemSayisi" Type="Int32" />
+          <Property Name="KarAlSayisi" Type="Int32" />
+          <Property Name="TakipEdenDurdurSayisi" Type="Int32" />
+          <Property Name="ZararDurdurSayisi" Type="Int32" />
+          <Property Name="StratejiSatSayisi" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="AlgoTradeOttDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AvciSonuclari" EntityType="Self.AvciSonuclari" />
+          <EntitySet Name="AyarlarTablosu" EntityType="Self.AyarlarTablosu" />
+          <EntitySet Name="FiyatKontrolTablosu" EntityType="Self.FiyatKontrolTablosu" />
+          <EntitySet Name="IslemTablosu" EntityType="Self.IslemTablosu" />
+          <EntitySet Name="RehberTablo" EntityType="Self.RehberTablo" />
+          <EntitySet Name="StratejiParametreleri" EntityType="Self.StratejiParametreleri" />
+          <EntitySet Name="StratejiyeTakilanlar" EntityType="Self.StratejiyeTakilanlar" />
+          <EntitySet Name="temp_AvciSonuclari" EntityType="Self.temp_AvciSonuclari" />
+          <EntitySet Name="temp_RehberTablo" EntityType="Self.temp_RehberTablo" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AlgoTradeOttDbModelStoreContainer" CdmEntityContainer="AlgoTradeOttDbEntities">
+          <EntitySetMapping Name="AvciSonuclari">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.AvciSonuclari">
+              <MappingFragment StoreEntitySet="AvciSonuclari">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="Sermaye" ColumnName="Sermaye" />
+                <ScalarProperty Name="Kar" ColumnName="Kar" />
+                <ScalarProperty Name="KarOran" ColumnName="KarOran" />
+                <ScalarProperty Name="BarSayisi" ColumnName="BarSayisi" />
+                <ScalarProperty Name="IslemSayisi" ColumnName="IslemSayisi" />
+                <ScalarProperty Name="SonDurum" ColumnName="SonDurum" />
+                <ScalarProperty Name="AlBarAcilisTarihi" ColumnName="AlBarAcilisTarihi" />
+                <ScalarProperty Name="GecenBarSayisi" ColumnName="GecenBarSayisi" />
+                <ScalarProperty Name="AlSinyalFiyat" ColumnName="AlSinyalFiyat" />
+                <ScalarProperty Name="MevcutFiyat" ColumnName="MevcutFiyat" />
+                <ScalarProperty Name="AlVeMevcutFarkOran" ColumnName="AlVeMevcutFarkOran" />
+                <ScalarProperty Name="IslemTipi" ColumnName="IslemTipi" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AyarlarTablosu">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.AyarlarTablosu">
+              <MappingFragment StoreEntitySet="AyarlarTablosu">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="BinanceApiKey" ColumnName="BinanceApiKey" />
+                <ScalarProperty Name="BinanceApiSecret" ColumnName="BinanceApiSecret" />
+                <ScalarProperty Name="EmirBoyutuUSDT" ColumnName="EmirBoyutuUSDT" />
+                <ScalarProperty Name="HaricSemboller" ColumnName="HaricSemboller" />
+                <ScalarProperty Name="IslemPeriyot" ColumnName="IslemPeriyot" />
+                <ScalarProperty Name="BacktestBarSayisi" ColumnName="BacktestBarSayisi" />
+                <ScalarProperty Name="BacktestEsikKarOrani" ColumnName="BacktestEsikKarOrani" />
+                <ScalarProperty Name="KarAlOran" ColumnName="KarAlOran" />
+                <ScalarProperty Name="TakipEdenDurdurOran" ColumnName="TakipEdenDurdurOran" />
+                <ScalarProperty Name="TelegramApiToken" ColumnName="TelegramApiToken" />
+                <ScalarProperty Name="TelegramLogChannel" ColumnName="TelegramLogChannel" />
+                <ScalarProperty Name="TelegramIslemChannel" ColumnName="TelegramIslemChannel" />
+                <ScalarProperty Name="IslemTipi" ColumnName="IslemTipi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FiyatKontrolTablosu">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.FiyatKontrolTablosu">
+              <MappingFragment StoreEntitySet="FiyatKontrolTablosu">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IslemID" ColumnName="IslemID" />
+                <ScalarProperty Name="KontrolTarihi" ColumnName="KontrolTarihi" />
+                <ScalarProperty Name="KontrolFiyat" ColumnName="KontrolFiyat" />
+                <ScalarProperty Name="KarOrani" ColumnName="KarOrani" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IslemTablosu">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.IslemTablosu">
+              <MappingFragment StoreEntitySet="IslemTablosu">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="GirisTarihi" ColumnName="GirisTarihi" />
+                <ScalarProperty Name="GirisBarAcilisTarihi" ColumnName="GirisBarAcilisTarihi" />
+                <ScalarProperty Name="EmirBoyutu" ColumnName="EmirBoyutu" />
+                <ScalarProperty Name="CoinAdeti" ColumnName="CoinAdeti" />
+                <ScalarProperty Name="GirisFiyat" ColumnName="GirisFiyat" />
+                <ScalarProperty Name="GirisPariteKarsiligi" ColumnName="GirisPariteKarsiligi" />
+                <ScalarProperty Name="KontrolTarihi" ColumnName="KontrolTarihi" />
+                <ScalarProperty Name="KontrolFiyat" ColumnName="KontrolFiyat" />
+                <ScalarProperty Name="KontrolPariteKarsiligi" ColumnName="KontrolPariteKarsiligi" />
+                <ScalarProperty Name="KarPariteKarsiligi" ColumnName="KarPariteKarsiligi" />
+                <ScalarProperty Name="KarOrani" ColumnName="KarOrani" />
+                <ScalarProperty Name="IslemKapandiMi" ColumnName="IslemKapandiMi" />
+                <ScalarProperty Name="PikFiyat" ColumnName="PikFiyat" />
+                <ScalarProperty Name="PikOrani" ColumnName="PikOrani" />
+                <ScalarProperty Name="PikTarihi" ColumnName="PikTarihi" />
+                <ScalarProperty Name="KapanmaSebebi" ColumnName="KapanmaSebebi" />
+                <ScalarProperty Name="IslemTipi" ColumnName="IslemTipi" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RehberTablo">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.RehberTablo">
+              <MappingFragment StoreEntitySet="RehberTablo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+                <ScalarProperty Name="NetKar" ColumnName="NetKar" />
+                <ScalarProperty Name="BurutKar" ColumnName="BurutKar" />
+                <ScalarProperty Name="BurutZarar" ColumnName="BurutZarar" />
+                <ScalarProperty Name="ProfitFactor" ColumnName="ProfitFactor" />
+                <ScalarProperty Name="BarSayisi" ColumnName="BarSayisi" />
+                <ScalarProperty Name="IslemSayisi" ColumnName="IslemSayisi" />
+                <ScalarProperty Name="BasariliIslemSayisi" ColumnName="BasariliIslemSayisi" />
+                <ScalarProperty Name="KarAlSayisi" ColumnName="KarAlSayisi" />
+                <ScalarProperty Name="TakipEdenDurdurSayisi" ColumnName="TakipEdenDurdurSayisi" />
+                <ScalarProperty Name="ZararDurdurSayisi" ColumnName="ZararDurdurSayisi" />
+                <ScalarProperty Name="StratejiSatSayisi" ColumnName="StratejiSatSayisi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StratejiParametreleri">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.StratejiParametreleri">
+              <MappingFragment StoreEntitySet="StratejiParametreleri">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ParametreAdi" ColumnName="ParametreAdi" />
+                <ScalarProperty Name="AltDeger" ColumnName="AltDeger" />
+                <ScalarProperty Name="UstDeger" ColumnName="UstDeger" />
+                <ScalarProperty Name="Adim" ColumnName="Adim" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StratejiyeTakilanlar">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.StratejiyeTakilanlar">
+              <MappingFragment StoreEntitySet="StratejiyeTakilanlar">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+                <ScalarProperty Name="GecenBarSayisi" ColumnName="GecenBarSayisi" />
+                <ScalarProperty Name="AlSinyalFiyat" ColumnName="AlSinyalFiyat" />
+                <ScalarProperty Name="MevcutFiyat" ColumnName="MevcutFiyat" />
+                <ScalarProperty Name="Sebep" ColumnName="Sebep" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="temp_AvciSonuclari">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.temp_AvciSonuclari">
+              <MappingFragment StoreEntitySet="temp_AvciSonuclari">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="Sermaye" ColumnName="Sermaye" />
+                <ScalarProperty Name="Kar" ColumnName="Kar" />
+                <ScalarProperty Name="KarOran" ColumnName="KarOran" />
+                <ScalarProperty Name="BarSayisi" ColumnName="BarSayisi" />
+                <ScalarProperty Name="IslemSayisi" ColumnName="IslemSayisi" />
+                <ScalarProperty Name="SonDurum" ColumnName="SonDurum" />
+                <ScalarProperty Name="AlBarAcilisTarihi" ColumnName="AlBarAcilisTarihi" />
+                <ScalarProperty Name="GecenBarSayisi" ColumnName="GecenBarSayisi" />
+                <ScalarProperty Name="AlSinyalFiyat" ColumnName="AlSinyalFiyat" />
+                <ScalarProperty Name="MevcutFiyat" ColumnName="MevcutFiyat" />
+                <ScalarProperty Name="AlVeMevcutFarkOran" ColumnName="AlVeMevcutFarkOran" />
+                <ScalarProperty Name="IslemTipi" ColumnName="IslemTipi" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="temp_RehberTablo">
+            <EntityTypeMapping TypeName="AlgoTradeOttDbModel.temp_RehberTablo">
+              <MappingFragment StoreEntitySet="temp_RehberTablo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Sembol" ColumnName="Sembol" />
+                <ScalarProperty Name="Periyot" ColumnName="Periyot" />
+                <ScalarProperty Name="Parametreler" ColumnName="Parametreler" />
+                <ScalarProperty Name="NetKar" ColumnName="NetKar" />
+                <ScalarProperty Name="BurutKar" ColumnName="BurutKar" />
+                <ScalarProperty Name="BurutZarar" ColumnName="BurutZarar" />
+                <ScalarProperty Name="ProfitFactor" ColumnName="ProfitFactor" />
+                <ScalarProperty Name="BarSayisi" ColumnName="BarSayisi" />
+                <ScalarProperty Name="IslemSayisi" ColumnName="IslemSayisi" />
+                <ScalarProperty Name="BasariliIslemSayisi" ColumnName="BasariliIslemSayisi" />
+                <ScalarProperty Name="KarAlSayisi" ColumnName="KarAlSayisi" />
+                <ScalarProperty Name="TakipEdenDurdurSayisi" ColumnName="TakipEdenDurdurSayisi" />
+                <ScalarProperty Name="ZararDurdurSayisi" ColumnName="ZararDurdurSayisi" />
+                <ScalarProperty Name="StratejiSatSayisi" ColumnName="StratejiSatSayisi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

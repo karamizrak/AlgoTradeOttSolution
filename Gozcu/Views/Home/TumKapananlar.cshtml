@@ -1,0 +1,273 @@
+﻿@{
+    ViewBag.Title = "Tüm Kapanan Pozisyonlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/bundles/datatablescss")
+    @Styles.Render("~/bundles/daterangepickercss")
+}
+
+<style>
+    .modal-full {
+        min-width: 95%;
+    }
+
+    .modal-full .modal-content {
+        min-height: 70vh;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-close" style="top: 6px; right: 18px;">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text"><span class="inputBaslik">Tarih Aralığı</span></span></div>
+                            <input type="text" class="form-control text-right" name="baslangicTarihi" style="width: 250px;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="h4">Kapanan pozisyonları detaylı inceleyebilirsiniz</h3>
+                </div>
+                <div class="card-body tablom-container">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalDetay" tabindex="-1" role="dialog" aria-labelledby="modalDetayLabel" aria-hidden="true" class="modal fade text-left">
+    <div role="document" class="modal-dialog modal-full">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalBaslik" class="modal-title">Pozisyon Detayı</h4>
+                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body" id="modalIcerik" style="background-color: #2bd65a33;">
+                
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button type="button" data-dismiss="modal" class="btn btn-secondary" id="modalButonKapat">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatablesjs")
+    @Scripts.Render("~/bundles/daterangepickerjs")
+    @*<script src="~/Content/vendor/datepicker/bootstrap-datepicker.tr.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            moment.defineLocale('tr', {
+                months: 'Ocak_Şubat_Mart_Nisan_Mayıs_Haziran_Temmuz_Ağustos_Eylül_Ekim_Kasım_Aralık'.split('_'),
+                monthsShort: 'Oca_Şub_Mar_Nis_May_Haz_Tem_Ağu_Eyl_Eki_Kas_Ara'.split('_'),
+                weekdays: 'Pazar_Pazartesi_Salı_Çarşamba_Perşembe_Cuma_Cumartesi'.split('_'),
+                weekdaysShort: 'Paz_Pts_Sal_Çar_Per_Cum_Cts'.split('_'),
+                weekdaysMin: 'Pz_Pt_Sa_Ça_Pe_Cu_Ct'.split('_'),
+                longDateFormat: {
+                    LT: 'HH:mm',
+                    LTS: 'HH:mm:ss',
+                    L: 'DD.MM.YYYY',
+                    LL: 'D MMMM YYYY',
+                    LLL: 'D MMMM YYYY HH:mm',
+                    LLLL: 'dddd, D MMMM YYYY HH:mm'
+                },
+                calendar: {
+                    sameDay: '[bugün saat] LT',
+                    nextDay: '[yarın saat] LT',
+                    nextWeek: '[gelecek] dddd [saat] LT',
+                    lastDay: '[dün] LT',
+                    lastWeek: '[geçen] dddd [saat] LT',
+                    sameElse: 'L'
+                },
+                relativeTime: {
+                    future: '%s sonra',
+                    past: '%s önce',
+                    s: 'birkaç saniye',
+                    ss: '%d saniye',
+                    m: 'bir dakika',
+                    mm: '%d dakika',
+                    h: 'bir saat',
+                    hh: '%d saat',
+                    d: 'bir gün',
+                    dd: '%d gün',
+                    M: 'bir ay',
+                    MM: '%d ay',
+                    y: 'bir yıl',
+                    yy: '%d yıl'
+                },
+                ordinal: function (number, period) {
+                    switch (period) {
+                        case 'd':
+                        case 'D':
+                        case 'Do':
+                        case 'DD':
+                            return number;
+                        default:
+                            if (number === 0) {  // special case for zero
+                                return number + '\'ıncı';
+                            }
+                            var a = number % 10,
+                                b = number % 100 - a,
+                                c = number >= 100 ? 100 : null;
+                            return number + (suffixes$4[a] || suffixes$4[b] || suffixes$4[c]);
+                    }
+                },
+                week: {
+                    dow: 1, // Monday is the first day of the week.
+                    doy: 7  // The week that contains Jan 7th is the first week of the year.
+                }
+            });
+
+            $('input[name="baslangicTarihi"]').daterangepicker({
+                opens: 'left',
+                autoApply: true,
+                ranges: {
+                    'Bugün': [moment(), moment()],
+                    'Dün': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Son 7 Gün': [moment().subtract(6, 'days'), moment()],
+                    'Son 15 Gün': [moment().subtract(14, 'days'), moment()],
+                    'Bu Ay': [moment().startOf('month'), moment().endOf('month')],
+                    'Geçen Ay': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                "alwaysShowCalendars": true,
+                locale: {
+                    format: "DD MMM YYYY",
+                    separator: " - ",
+                    applyLabel: "Getir",
+                    cancelLabel: "İptal",
+                    fromLabel: "Başlangıç",
+                    toLabel: "Bitiş",
+                    customRangeLabel: "Özel",
+                    weekLabel: "H",
+                    daysOfWeek: [
+                        "Pa",
+                        "Pt",
+                        "Sa",
+                        "Ça",
+                        "Pe",
+                        "Cu",
+                        "Ct"
+                    ],
+                    monthNames: [
+                        "Ocak",
+                        "Şubat",
+                        "Mart",
+                        "Nisan",
+                        "Mayıs",
+                        "Haziran",
+                        "Temmuz",
+                        "Ağustos",
+                        "Eylül",
+                        "Ekim",
+                        "Kasım",
+                        "Aralık"
+                    ],
+                    firstDay: 1
+                },
+                startDate: "23 Eyl 2019"
+            }, function (start, end, label) {
+                Getir(start.format('YYYY-MM-DD'), end.add(1, 'day').format('YYYY-MM-DD'));
+            });
+
+            Getir(moment($('input[name="baslangicTarihi"]').data('daterangepicker').startDate._d).format('YYYY-MM-DD'),
+                moment($('input[name="baslangicTarihi"]').data('daterangepicker').endDate._d).add(1, 'day').format('YYYY-MM-DD'));
+        });
+
+        function Getir(basla, bit) {
+            $(".tablom-container").html("<p class='text-center'>Yükleniyor...</p>");
+            PageMethodCagir("/json/Home/TumKapananlarDon",
+                {
+                    param: {
+                        baslangic: basla,
+                        bitis: bit
+                    },
+                    basariliOlunca: function (response) {
+                        //console.table(response);
+                        var tbody = "";
+
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                var tcTipi = parseInt(response[i].IslemTipi) === 1 ? "Gerçek İşlem" : "Sanal İşlem";
+                                tbody += "<tr>" +
+                                    "<td class='text-left'>" + response[i].Sembol.toString().replace("USDT", "/USDT") + " - " + response[i].Parametreler + " - " + response[i].Periyot + "</td>" +
+                                    "<td class='text-right'>" + moment(response[i].GirisTarihi).format('DD MMMM HH:mm') + "</td>" +
+                                    "<td class='text-right'>" + moment(response[i].PikTarihi).format('DD MMMM HH:mm') + "</td>" +
+                                    "<td class='text-right'>" + moment(response[i].KontrolTarihi).format('DD MMMM HH:mm') + "</td>" +
+                                    "<td class='text-right'>" + response[i].GirisFiyat + "</td>" +
+                                    "<td class='text-right'>" + response[i].PikFiyat + "</td>" +
+                                    "<td class='text-right'>" + response[i].KontrolFiyat + "</td>" +
+                                    "<td class='text-right'>" + response[i].KarOrani + "</td>" +
+                                    "<td class='text-right'>" + response[i].PikOrani + "</td>" +
+                                    "<td class='text-right'>" + response[i].KapanmaSebebi + "</td>" +
+                                    "<td class='text-right'>" + tcTipi + "</td>" +
+                                    "<td class='text-right'><a class='btn btn-link tablo-detay-btn' onclick='DetayGoster(\"" + response[i].Id + "\")'>Detay</a></td>" +
+                                    "</tr>";
+                            }
+                        }
+
+                        var tbl = "<table class='datatable table table-striped table-bordered' id='tablom'>" +
+                            "<thead><tr>" +
+                            "<th class='text-left'>Sembol</th>" +
+                            "<th class='text-right'>Giriş Tarihi</th>" +
+                            "<th class='text-right'>Pik Tarihi</th>" +
+                            "<th class='text-right'>Kapanış Tarihi</th>" +
+                            "<th class='text-right'>Giriş Fiyatı</th>" +
+                            "<th class='text-right'>Pik Fiyatı</th>" +
+                            "<th class='text-right'>Kapanış Fiyatı</th>" +
+                            "<th class='text-right'>Kar (%)</th>" +
+                            "<th class='text-right'>Pik Oranı (%)</th>" +
+                            "<th class='text-right'>Kapanma Sebebi</th>" +
+                            "<th class='text-right'>İşlem Tipi</th>" +
+                            "<th class='text-right'>Detay</th>" +
+                            "</tr></thead>" +
+                            "<tbody>" + tbody + "</tbody>" +
+                            "</table>";
+
+                        $(".tablom-container").html(tbl);
+                    },
+                    hataVerince: function (e) {
+                        JsonErrorHandler(e);
+                    },
+                    baglantiOncesinde: function () { },
+                    tamamlaninca: function () {
+                        $('#tablom').dataTable({
+                            retrieve: true,
+                            responsive: true,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'csv', 'excel', 'pdf'
+                            ],
+                            "autoWidth": false,
+                            "order": [[8, "desc"]],
+                            "language": { "url": "/Content/vendor/datatables/Turkish.json" }
+                        });
+                    }
+                });
+        }
+
+        function DetayGoster(id) {
+            $.ajax({
+                type: "POST",
+                url: "/json/Home/PozisyonDetayDon",
+                data: {
+                    islemID: id
+                },
+                success: function (response) {
+                    //console.log(response);
+                    var _modal = $('#modalDetay');
+                    _modal.find(".modal-body").html(response);
+                    _modal.modal('show');
+                },
+                error: function (e) {
+                    JsonErrorHandler(e);
+                }
+            });
+        }
+    </script>
+}

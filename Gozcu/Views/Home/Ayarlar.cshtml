@@ -1,0 +1,146 @@
+﻿@using System.Data
+@using System.Globalization
+@model Gozcu.DAL.AyarlarTablosu
+
+@{
+    ViewBag.Title = "Ayarlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-group label {
+        padding-top: 7px;
+    }
+</style>
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="h4">Ayarlar</h3>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("AyarKaydet", "Home", FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                @Html.HiddenFor(m => m.Id);
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Binance Api Key</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.BinanceApiKey, new { @class = "form-control" })
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Binance Api Secret</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.BinanceApiSecret, new { @class = "form-control" })
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Emir Boyutu (USDT)</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.EmirBoyutuUSDT, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Sorun yaşamamak için en az 20 girin.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Zaman Periyodu</label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(modelItem => modelItem.IslemPeriyot, new[] { new SelectListItem { Text = "5 dakika", Value = "5m" }, new SelectListItem { Text = "15 dakika", Value = "15m" }, new SelectListItem { Text = "30 dakika", Value = "30m" }, new SelectListItem { Text = "1 saat", Value = "1h" }, new SelectListItem { Text = "4 saat", Value = "4h" }, new SelectListItem { Text = "1 gün", Value = "1d" } }, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Bu ayar tarayıcının işlevini etkilemektedir; avcı, daha önce oluşturulmuş rehber tabloyu dikkate almaktadır. Ayrıca tüccar da açılmış işlemin parametre ve periyot bilgileri ile işlemi takip etmektedir, açık işlemler bu ayardan etkilenmez. Periyot değişikliğinden sonra tarayıcı robotu çalıştırın.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Dikkate Alınmayacaklar</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.HaricSemboller, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Hiçbir zaman alınıp satılmasını istemediğiniz sembolleri buraya ekleyebilirsiniz.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Kar Al (%)</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.KarAlOran, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Alım fiyatından % kaç yükseldiğinde satmasını istiyorsanız yazın.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Takip Eden Durdur (%)</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.TakipEdenDurdurOran, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Alım noktanızdan sonra görülen en tepe fiyattan % kaç düştüğünde satmasını istiyorsanız o değeri girin. Örneğin %3 yükseldikten sonra <b>%2</b> düştü ise kalan %1 kar alıp çık diyebilmek için bu değeri <b>%2</b> olarak ayarlayabilirsiniz. Bu değer aynı zamanda stop-loss değerdir, <b>%2</b> zararda durdur diyebilmek için de bu değer kullanılmaktadır.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Backtest Bar Sayısı</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.BacktestBarSayisi, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Tarayici Stratejisi için backtest yapılacak bar sayısını belirtiniz.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Backtest Eşik Kar Oranı</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.BacktestEsikKarOrani, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Tarayici Stratejisi için backtest net kar olanı bu oranın altında olan değerler dikkate alınmaz.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">İşlem Tipi</label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(modelItem => modelItem.IslemTipi, new[] { new SelectListItem { Text = "Gerçek İşlem", Value = "1" }, new SelectListItem { Text = "Sanal İşlem", Value = "2" } }, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">İşlem tipini Gerçek İşlem yaparsanız cüzdanınızdaki bakiye ile işleme girer çıkar. Sanal İşlem seçerseniz sadece fiyatları takip ederek hayali olarak al-sat takibi yapar, cüzdanınızla bir bağlantı kurmaz. Açık işlemler varken bu seçeneği değiştiğinizde işlemleriniz etkilenmez, her işlem açıldığında sanal mı gerçek mi olduğu takip edilir ve ona göre işlem kapatılışı takip edilir.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Telegram Api Token</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.TelegramApiToken, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Botfather tarafından aldığınız Telegram Api Kodu</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Telegram İşlem Kanalı</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.TelegramIslemChannel, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">İşlemleri takip edeceğiniz işlem kanalının keyini girin. Başında -100 olmak zorunda.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-md-3 control-label">Telegram Log Kanalı</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.TelegramLogChannel, new { @class = "form-control" })
+                        <small iclass="form-text text-muted">Tarayıcı bilgileri ve çeşitli hata mesajlarını takip edebileceğiniz log kanalının bilgilerini giriniz. Başında -100 olmak zorunda.</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-9">
+                        <input type="submit" class="btn btn-primary" value="Ayarları Kaydet" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}

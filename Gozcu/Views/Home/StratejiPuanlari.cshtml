@@ -1,0 +1,75 @@
+﻿@using System.Data
+@using System.Globalization
+@model List<Gozcu.DAL.RehberTablo>
+
+@{
+    ViewBag.Title = "Rehber Tablo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/bundles/datatablescss")
+    @Styles.Render("~/bundles/daterangepickercss")
+}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="h4">Başarılı sayılan işlemlerin listesi</h3>
+        </div>
+        <div class="card-body">
+            <table class='datatable table table-striped table-bordered'>
+                <thead>
+                    <tr>
+                        <th class="text-left">Sembol</th>
+                        <th class="text-right">Kar Oranı %</th>
+                        <th class="text-right">Profit Factor</th>
+                        <th class="text-right">Bar Sayısı</th>
+                        <th class="text-right">İşlem Sayısı</th>
+                        <th class="text-right">Başarılı İşl.</th>
+                        <th class="text-right">Başarı Oranı %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var liste = Model.Where(x => x.Sembol.EndsWith("USDT")).ToList();
+                    }
+                    @foreach (var row in liste)
+                    {
+                        <tr>
+                            <td class="text-left">@(row.Sembol + " - " + row.Parametreler + " - " + row.Periyot)</td>
+                            <td class="text-right">@($"{row.NetKar:N2}")</td>
+                            <td class="text-right">@($"{row.ProfitFactor:N2}")</td>
+                            <td class="text-right">@($"{row.BarSayisi:N0}")</td>
+                            <td class="text-right">@row.IslemSayisi</td>
+                            <td class="text-right">@row.BasariliIslemSayisi</td>
+                            <td class="text-right">@($"{100 * Convert.ToDecimal(Convert.ToDecimal(row.BasariliIslemSayisi) / Convert.ToDecimal(row.IslemSayisi)):N0}")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatablesjs")
+    @Scripts.Render("~/bundles/daterangepickerjs")
+    <script>
+        $(document).ready(function () {
+            $('.datatable').dataTable({
+                retrieve: true,
+                responsive: true,
+                paging: false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'excel', 'pdf'
+                ],
+                "autoWidth": false,
+                //"order": [[5, "desc"], [1, "desc"]],
+                "language": { "url": "/Content/vendor/datatables/Turkish.json" }
+            });
+        });
+    </script>
+}

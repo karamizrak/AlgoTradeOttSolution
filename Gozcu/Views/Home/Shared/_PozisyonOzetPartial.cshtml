@@ -1,0 +1,140 @@
+﻿@using System.Data
+@using Gozcu.Models
+@model KeyValuePair<Gozcu.DAL.IslemTablosu, List<Gozcu.DAL.FiyatKontrolTablosu>>
+
+@{
+    var durum = Convert.ToBoolean(Model.Key.IslemKapandiMi) ? "Kapanış" : "Kontrol";
+    var kapanisBilgisi = Convert.ToBoolean(Model.Key.IslemKapandiMi) ? " - " + Model.Key.KapanmaSebebi : "";
+    var islemTipi = Model.Key.IslemTipi == 2 ? "SANAL İŞLEM" : "GERÇEK İŞLEM";
+    var baslik = Model.Key.Sembol.Replace("USDT", "/USDT") + " - " + Model.Key.Parametreler + " - " + Model.Key.Periyot + kapanisBilgisi + " (" + islemTipi + ")";
+}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="h4">@baslik</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="daily-feeds card">
+                        <div class="item">
+                            <div class="feed d-flex justify-content-between">
+                                <div class="feed-body d-flex justify-content-between">
+                                    <div class="content">
+                                        <h5>Süre: @(Genel.PozisyonSuresiVer(Convert.ToDateTime(Model.Key.GirisTarihi), Convert.ToDateTime(Model.Key.KontrolTarihi)))</h5><span>Giriş Fiyatı: @Model.Key.GirisFiyat</span>
+                                        <div class="full-date"><small>Giriş Tarihi: @Convert.ToDateTime(Model.Key.GirisTarihi).ToString("dd MMMM HH:mm")</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="daily-feeds card">
+                        <div class="item">
+                            <div class="feed d-flex justify-content-between">
+                                <div class="feed-body d-flex justify-content-between">
+                                    <div class="content">
+                                        <h5>@durum Kar Oranı: @Model.Key.KarOrani%</h5><span>@durum Fiyatı: @Model.Key.KontrolFiyat</span>
+                                        <div class="full-date"><small>@durum Tarihi: @Convert.ToDateTime(Model.Key.KontrolTarihi).ToString("dd MMMM HH:mm")</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="daily-feeds card">
+                        <div class="item">
+                            <div class="feed d-flex justify-content-between">
+                                <div class="feed-body d-flex justify-content-between">
+                                    <div class="content">
+                                        <h5>Pik Kar Oranı: @Model.Key.PikOrani%</h5><span>Pik Fiyatı: @Model.Key.PikFiyat</span>
+                                        <div class="full-date"><small>Pik Tarihi: @Convert.ToDateTime(Model.Key.PikTarihi).ToString("dd MMMM HH:mm") (@(Genel.PozisyonSuresiVer(Convert.ToDateTime(Model.Key.GirisTarihi), Convert.ToDateTime(Model.Key.PikTarihi))) sürede)</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="@Model.Key.Id.ToString()highChartContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            var arrYTether = JSON.parse('@Html.Raw(Json.Encode(Model.Value.AsEnumerable().Select(x=>x.KontrolFiyat).ToArray()))');
+            var arrYKar = JSON.parse('@Html.Raw(Json.Encode(Model.Value.AsEnumerable().Select(x=>x.KarOrani).ToArray()))');
+            var arrX = JSON.parse('@Html.Raw(Json.Encode(Model.Value.AsEnumerable().Select(x=>x.KontrolTarihi.Value.ToString("dd MMMM HH:mm")).ToArray()))');
+
+            Highcharts.chart(@Model.Key.Id.ToString()+'highChartContainer', {
+                title: {
+                    text: null
+                },
+                legend: {
+                    enabled: true
+                },
+                tooltip: {
+                    shared: true
+                },
+                yAxis: [{
+                    gridLineWidth: 0,
+                    labels: {
+                        format: '{value:.,8f}%'
+                    },
+                    title: {
+                        text: 'Kar Oranı'
+                    },
+                    showFirstLabel: false,
+                    opposite: true
+                },{
+                    labels: {
+                        format: '{value:.,8f}'
+                    },
+                    title: {
+                        text: 'Tether'
+                    },
+                    showFirstLabel: false
+                }],
+                xAxis: {
+                    categories: arrX,
+                    labels: {
+                        autoRotation: [-10, -20, -30, -40, -50, -60, -70, -80, -90]
+                    },
+                    crosshair: true,
+                    plotLines: [{
+                        color: '#00000085',
+                        width: 2,
+                        value: @Model.Value.AsEnumerable().Select(x=> Convert.ToDateTime(x.KontrolTarihi).ToString("dd MMMM HH:mm")).ToList().IndexOf(Convert.ToDateTime(Model.Key.PikTarihi).ToString("dd MMMM HH:mm")),
+                        dashStyle: 'longdashdot',
+                        label: {
+                            color: '#00000085',
+                            text: 'Pik Noktası: @Model.Key.PikOrani% Kar',
+                            verticalAlign: 'top',
+                            textAlign: 'left',
+                            rotation: 0,
+                        }
+                    }]
+                },
+                series: [{
+                    yAxis: 1,
+                    name: '@Model.Key.Sembol.Replace("USDT", "/USDT")',
+                    data: arrYTether,
+                    zIndex: 2,
+                    color: '#0eaf3a',
+                },{
+                    name: 'KAR ORANI',
+                    type: 'column',
+                    data: arrYKar,
+                    zIndex: 1,
+                    color: '#dedede75',
+                    tooltip: {
+                        valueSuffix: '%'
+                    }
+                }]
+            });
+        });
+</script>

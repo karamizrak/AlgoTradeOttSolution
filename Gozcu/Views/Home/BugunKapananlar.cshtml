@@ -1,0 +1,24 @@
+﻿@using System.Data
+@using Gozcu.Models
+@model List<KeyValuePair<Gozcu.DAL.IslemTablosu, List<Gozcu.DAL.FiyatKontrolTablosu>>>
+
+@{
+    ViewBag.Title = "Bugün Kapanan Pozisyonlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Any())
+{
+    foreach (var keyValuePair in Model)
+    {
+        Html.RenderPartial("~/Views/Home/Shared/_PozisyonOzetPartial.cshtml", keyValuePair);
+    }
+}
+else
+{
+    <h2>Bugün kapanan pozisyon bulunmuyor!</h2>
+}
+
+
+@section scripts{
+}
